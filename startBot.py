@@ -21,7 +21,7 @@ def fetch(bot):
 
 def autoFollow(bot):
 	for phrase in autoFollowPhrases:
-		moombahBot.auto_fav(phrase, count=300)
+		moombahBot.auto_follow(phrase, count=300)
 
 def autoFav(bot):
 	for phrase in autoFavPhrases:
