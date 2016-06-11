@@ -30,6 +30,7 @@ if __name__ == "__main__":
 	#init bot
 	moombahBot = TwitterBot("apiConfig.conf")
 	moombahBot.sync_follows()
+	fetch(moombahBot)
 
 	#Sync once daily @ 1 AM
 	sched.add_job(lambda: moombahBot.sync_follows(), 'cron', hour='1')
