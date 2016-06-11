@@ -15,6 +15,7 @@ def fetch(bot):
 	#actions
 	autoFav(bot)
 	bot.auto_follow_followers()
+	bot.auto_follow_followers_of_user("MoombahSC", count=1000)
 
 def autoFav(bot):
 	for phrase in autoFavPhrases:
