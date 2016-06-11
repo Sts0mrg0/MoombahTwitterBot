@@ -13,9 +13,7 @@ autoFavPhrases = open(autoFavPhrasesFile).readlines()
 
 def fetch(bot):
 	#actions
-	syncFollowers(bot)
 	autoFav(bot)
-
 
 def autoFav(bot):
 	for phrase in autoFavPhrases:
