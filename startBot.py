@@ -6,7 +6,7 @@ import time
 #Bot Config
 autoFavPhrasesFile = "autoFavPhrases.txt"
 autoRetweetPhrasesFile = "autoRetweetPhrases.txt"
-fetchIntervalMinutes='30'
+fetchIntervalMinutes='60'
 
 #Globals
 autoFavPhrases = open(autoFavPhrasesFile).readlines()
@@ -15,11 +15,10 @@ def fetch(bot):
 	#actions
 	autoFav(bot)
 	bot.auto_follow_followers()
-	bot.auto_follow_followers_of_user("MoombahSC", count=1000)
 
 def autoFav(bot):
 	for phrase in autoFavPhrases:
-		moombahBot.auto_fav(phrase, count=1000)
+		moombahBot.auto_fav(phrase, count=300)
 		
 if __name__ == "__main__":
 	print "Starting MoombahBot..."
