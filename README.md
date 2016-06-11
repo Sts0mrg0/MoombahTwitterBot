@@ -1,2 +1,2 @@
-# MoombahTwitterBot
-Twitter account manager for @moombahsc
+# BotMoomba
+Account manager for Moombathon twitter account.
