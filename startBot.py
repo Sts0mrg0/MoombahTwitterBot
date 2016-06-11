@@ -6,15 +6,22 @@ import time
 #Bot Config
 autoFavPhrasesFile = "autoFavPhrases.txt"
 autoRetweetPhrasesFile = "autoRetweetPhrases.txt"
+autoFollowPhrasesFile = "autoFollowPhrases.txt"
 fetchIntervalMinutes='60'
 
 #Globals
 autoFavPhrases = open(autoFavPhrasesFile).readlines()
+autoFollowPhrases = open(autoFollowPhrasesFile).readlines()
 
 def fetch(bot):
 	#actions
 	autoFav(bot)
 	bot.auto_follow_followers()
+	autoFollow(bot)
+
+def autoFollow(bot):
+	for phrase in autoFollowPhrases:
+		moombahBot.auto_fav(phrase, count=300)
 
 def autoFav(bot):
 	for phrase in autoFavPhrases:
@@ -28,7 +35,7 @@ if __name__ == "__main__":
 
 	#init bot
 	moombahBot = TwitterBot("apiConfig.conf")
-	moombahBot.sync_follows()
+#	moombahBot.sync_follows()
 	fetch(moombahBot)
 
 	#Sync once daily @ 1 AM
