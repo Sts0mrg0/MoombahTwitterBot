@@ -283,7 +283,7 @@ class TwitterBot:
                     continue
 
                 result = self.TWITTER_CONNECTION.statuses.retweet(id=tweet["id"])
-                logger.info("[--]Retweeted:", (result["text"].encode("utf-8")))
+                logger.info("[--]Retweeted: %s" % (result["text"].encode("utf-8")))
                 #print("Retweeted: %s" % (result["text"].encode("utf-8")), file=sys.stdout)
 
             # when you have already retweeted a tweet, this error is thrown
