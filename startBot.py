@@ -6,6 +6,7 @@ import logging
 import sys
 
 #Bot Config
+apiConfFile = "apiConfig.conf"
 autoFavPhrasesFile = "autoFavPhrases.txt"
 autoRetweetPhrasesFile = "autoRetweetPhrases.txt"
 autoFollowPhrasesFile = "autoFollowPhrases.txt"
@@ -70,15 +71,15 @@ if __name__ == "__main__":
 	sched = BackgroundScheduler()
 
 	#init bot
-	moombahBot = TwitterBot("apiConfig.conf")
+	moombahBot = TwitterBot(config_file=apiConfFile, logger=logger)
 
 	#Sync once daily
 	sched.add_job(lambda: moombahBot.sync_follows(), 'interval', hours=23, replace_existing=True)
-	logger.debug('Account sync cronjob added: every 23 hours')
+	logger.debug('Account sync cronjob added')
 
 	#Fetch at interval
 	sched.add_job(lambda: fetch(moombahBot), 'interval', minutes=fetchIntervalMinutes, replace_existing=True)
-	logger.debug('Fetch cronjob added: every', str(fetchIntervalMinutes), 'minutes')
+	logger.debug('Fetch cronjob added')
 
 	#Running
 	logger.info("[+]Moombah Bot Running")

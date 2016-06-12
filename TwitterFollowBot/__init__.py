@@ -32,19 +32,19 @@ class TwitterBot:
         and favoriting tweets.
     """
 
-    def __init__(self, config_file="config.txt"):
+    def __init__(self, config_file="config.txt", logger=None):
         # this variable contains the configuration for the bot
         self.BOT_CONFIG = {}
 
         # this variable contains the authorized connection to the Twitter API
         self.TWITTER_CONNECTION = None
 
-        self.bot_setup(config_file)
+        self.bot_setup(config_file, logger=logger)
 
         # Used for random timers
         random.seed()
 
-    def wait_on_action(self):
+    def wait_on_action(self, logger=None):
         min_time = 0
         max_time = 0
         if "FOLLOW_BACKOFF_MIN_SECONDS" in self.BOT_CONFIG:
@@ -61,12 +61,15 @@ class TwitterBot:
         wait_time = random.randint(min_time, max_time)
 
         if wait_time > 0:
-            print("Choosing time between %d and %d - waiting %d seconds before action" % (min_time, max_time, wait_time))
+            if logger:
+                logger.warn("[-]Choosing time between %d and %d - waiting %d seconds before action" % (min_time, max_time, wait_time))
+            else:
+                print("Choosing time between %d and %d - waiting %d seconds before action" % (min_time, max_time, wait_time))
             time.sleep(wait_time)
 
         return wait_time
 
-    def bot_setup(self, config_file="config.txt"):
+    def bot_setup(self, config_file="config.txt", logger=None):
         """
             Reads in the bot configuration file and sets up the bot.
 
@@ -122,9 +125,14 @@ class TwitterBot:
         # if they are old
         if (time.time() - os.path.getmtime(self.BOT_CONFIG["FOLLOWS_FILE"]) > 86400 or
                 time.time() - os.path.getmtime(self.BOT_CONFIG["FOLLOWERS_FILE"]) > 86400):
-            print("Warning: Your Twitter follower sync files are more than a day old. "
-                  "It is highly recommended that you sync them by calling sync_follows() "
-                  "before continuing.", file=sys.stderr)
+            if logger:
+                logger.warn("Warning: Your Twitter follower sync files are more than a day old. "
+                      "It is highly recommended that you sync them by calling sync_follows() "
+                      "before continuing.")
+            else:
+                print("Warning: Your Twitter follower sync files are more than a day old. "
+                      "It is highly recommended that you sync them by calling sync_follows() "
+                      "before continuing.", file=sys.stderr)
 
         # create an authorized connection to the Twitter API
         self.TWITTER_CONNECTION = Twitter(auth=OAuth(self.BOT_CONFIG["OAUTH_TOKEN"],
@@ -309,7 +317,7 @@ class TwitterBot:
                         tweet["user"]["id"] not in following and
                         tweet["user"]["id"] not in do_not_follow):
 
-                    self.wait_on_action()
+                    self.wait_on_action(logger=logger)
 
                     self.TWITTER_CONNECTION.friendships.create(user_id=tweet["user"]["id"], follow=False)
                     following.update(set([tweet["user"]["id"]]))
@@ -348,7 +356,7 @@ class TwitterBot:
         not_following_back = list(not_following_back)[:count]
         for user_id in not_following_back:
             try:
-                self.wait_on_action()
+                self.wait_on_action(logger=logger)
 
                 self.TWITTER_CONNECTION.friendships.create(user_id=user_id, follow=False)
             except TwitterHTTPError as api_error:
@@ -380,7 +388,7 @@ class TwitterBot:
                 if (user_id not in following and
                         user_id not in do_not_follow):
 
-                    self.wait_on_action()
+                    self.wait_on_action(logger=logger)
 
                     self.TWITTER_CONNECTION.friendships.create(user_id=user_id, follow=False)
                     print("Followed %s" % user_id, file=sys.stdout)
@@ -424,12 +432,12 @@ class TwitterBot:
         for user_id in not_following_back:
             if user_id not in self.BOT_CONFIG["USERS_KEEP_FOLLOWING"]:
 
-                self.wait_on_action()
+                self.wait_on_action(logger=logger)
 
                 self.TWITTER_CONNECTION.friendships.destroy(user_id=user_id)
                 print("Unfollowed %d" % (user_id), file=sys.stdout)
 
-    def auto_unfollow_all_followers(self,count=None):
+    def auto_unfollow_all_followers(self,count=None, logger=None):
         """
             Unfollows everyone that you are following(except those who you have specified not to)
         """
@@ -438,7 +446,7 @@ class TwitterBot:
         for user_id in following:
             if user_id not in self.BOT_CONFIG["USERS_KEEP_FOLLOWING"]:
 
-                self.wait_on_action()
+                self.wait_on_action(logger=logger)
 
                 self.TWITTER_CONNECTION.friendships.destroy(user_id=user_id)
                 print("Unfollowed %d" % (user_id), file=sys.stdout)
