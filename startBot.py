@@ -107,15 +107,15 @@ if __name__ == "__main__":
 	
 	#Sync+fetch on start
 	try:
-		logger.info("[+]Starting initial fetch...")
+		logger.info("[+]Starting initial sync...")
 		moombahBot.sync_follows()
-		logger.info("[+]Initial fetch complete")
+		logger.info("[+]Initial sync complete")
 	except Exception as e:
 		logger.error("Initial sync: %s" % repr(e))
 	try:	
-		logger.info("[+]Starting initial sync...")
+		logger.info("[+]Starting initial fetch...")
 		fetch(moombahBot)
-		logger.info("[+]Initial sync complete")
+		logger.info("[+]Initial fetch complete")
 	except Exception as e:
 		logger.error("Initial fetch: %s" % repr(e))
 
