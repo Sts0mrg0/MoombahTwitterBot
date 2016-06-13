@@ -262,6 +262,9 @@ class TwitterBot:
                         print("auto_fav - You have been rate limited.",file=sys.stderr)
                     return
 
+                elif "you have already favorited this status" in str(api_error).lower():
+			pass
+
                 else:
                     if logger:
                         logger.error(str(api_error))
